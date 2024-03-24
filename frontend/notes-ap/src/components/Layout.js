@@ -1,15 +1,30 @@
-// Layout.js
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserEdit, faBook, faChartBar } from '@fortawesome/free-solid-svg-icons'; // Import icons from @fortawesome/free-solid-svg-icons
 
 const Layout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="bg-blue-500 text-white py-4">
-        <h1 className="text-3xl font-bold text-center">Welcome to UniVerse</h1>
+      <header className="bg-blue-500 text-white py-4 flex justify-between items-center px-4">
+        <h1 className="text-3xl font-bold justify-center flex">Welcome to UniVerse</h1>
+        <nav className="flex items-center">
+          <Link to="/edit-profile" className="px-4">
+            <FontAwesomeIcon icon={faUserEdit} />
+          </Link>
+          <Link to="/notes" className="px-4">
+            <FontAwesomeIcon icon={faBook} />
+          </Link>
+          <Link to="/dashboard" className="px-4">
+            <FontAwesomeIcon icon={faChartBar} />
+          </Link>
+          <Link to="/results" className="px-4">
+            Results
+          </Link>
+        </nav>
       </header>
       <main className="flex-grow">{children}</main>
-      <footer className=" text-white">
+      <footer className="text-white">
         <div className="w-full h-16 bg-blue-700">
           {/* Wavy border SVG */}
           <svg
