@@ -27,7 +27,9 @@ mongoose
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+var cors = require('cors')
 
+app.use(cors()) 
 // LOGIN ROUTE
 app.use("/signup", userRoute);
 

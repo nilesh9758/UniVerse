@@ -7,6 +7,7 @@ const { setUser } = require("../service/auth")
 async function UserSignup(req, res) {
     try {
         const { name, rollNo, email, age, gender, password } = req.body;
+        console.log("sdds");
         await personal_user.create({
             name,
             rollNo,
