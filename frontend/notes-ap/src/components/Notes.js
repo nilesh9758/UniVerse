@@ -5,14 +5,14 @@ const SemesterPage = () => {
   const [selectedSemester, setSelectedSemester] = useState(null); // State to keep track of selected semester
 
   const semesters = [
-    { id: 'semester1', name: 'Semester 1' },
-    { id: 'semester2', name: 'Semester 2' },
-    { id: 'semester3', name: 'Semester 3' },
-    { id: 'semester4', name: 'Semester 4' },
-    { id: 'semester5', name: 'Semester 5' },
-    { id: 'semester6', name: 'Semester 6' },
-    { id: 'semester7', name: 'Semester 7' },
-    { id: 'semester8', name: 'Semester 8' }
+    { id: '1', name: 'Semester 1' },
+    { id: '2', name: 'Semester 2' },
+    { id: '3', name: 'Semester 3' },
+    { id: '4', name: 'Semester 4' },
+    { id: '5', name: 'Semester 5' },
+    { id: '6', name: 'Semester 6' },
+    { id: '7', name: 'Semester 7' },
+    { id: '8', name: 'Semester 8' }
   ];
 
   const handleSemesterClick = (semesterId) => {

@@ -4,10 +4,10 @@ import axios from 'axios';
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    rollNumber: '',
+    rollNo: '',
     password: '',
   });
-
+ // axios.defaults.withCredentials = true
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -19,10 +19,11 @@ const Login = () => {
 
     try {
       console.log(formData);
-      navigate('/dashboard');
+     
       const response = await axios.post('http://localhost:5000/signup/login', formData);
       console.log(response.data);
       // Assuming successful login, navigate to homepage
+      navigate('/dashboard');
     } catch (error) {
       console.error('Error logging in:', error);
     }
@@ -37,16 +38,16 @@ const Login = () => {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="rollNumber" className="block text-gray-700">Roll Number</label>
+              <label htmlFor="rollNo" className="block text-gray-700">Roll Number</label>
               <input
-                id="rollNumber"
-                name="rollNumber"
+                id="rollNo"
+                name="rollNo"
                 type="text"
-                autoComplete="rollNumber"
+                autoComplete="rollNo"
                 required
                 className="daisy-input w-full"
                 placeholder="Enter your roll number"
-                value={formData.rollNumber}
+                value={formData.rollNo}
                 onChange={handleChange}
               />
             </div>

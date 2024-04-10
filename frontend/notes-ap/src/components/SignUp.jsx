@@ -6,7 +6,7 @@ import 'tailwindcss/tailwind.css';
 const SignUp = () => {
   const [formData, setFormData] = useState({
     name: '',
-    rollNumber: '',
+    rollNo: '',
     email: '',
     age: '',
     gender: '',
@@ -23,19 +23,20 @@ const SignUp = () => {
     e.preventDefault();
 
     try {
-      navigate('/login');
+     
       console.log(formData); 
       const response = await axios.post('http://localhost:5000/signup', formData);
       // Assuming the response includes a success message
       // Reset the form after successful registration
       setFormData({
         name: '',
-        rollNumber: '',
+        rollNo: '',
         email: '',
         age: '',
         gender: '',
         password: '',
       });
+       navigate('/login');
     } catch (error) {
       console.error('Error registering student:', error);
     }
@@ -61,16 +62,16 @@ const SignUp = () => {
             />
           </div>
           <div>
-            <label htmlFor="rollNumber" className="block text-gray-700">Roll Number</label>
+            <label htmlFor="rollNo" className="block text-gray-700">Roll Number</label>
             <input
-              id="rollNumber"
-              name="rollNumber"
+              id="rollNo"
+              name="rollNo"
               type="text"
-              autoComplete="rollNumber"
+              autoComplete="rollNo"
               required
               className="daisy-input w-full"
               placeholder="Enter your roll number"
-              value={formData.rollNumber}
+              value={formData.rollNo}
               onChange={handleChange}
             />
           </div>

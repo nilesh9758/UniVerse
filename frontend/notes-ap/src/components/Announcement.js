@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+axios.defaults.withCredentials = true
 const Announcements = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newAnnouncement, setNewAnnouncement] = useState({
     title: '',
-    data: ''
+    body: '',
+    date: new Date().toISOString().split('T')[0] // Initialize date with today's date
   });
 
   useEffect(() => {
@@ -31,11 +32,11 @@ const Announcements = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/announcements', newAnnouncement);
-      console.log(response.data);
       setShowAddDialog(false);
       setNewAnnouncement({
         title: '',
-        data: ''
+        body: '',
+        date: new Date().toISOString().split('T')[0] // Reset date to today's date
       });
       fetchAnnouncements(); // Refresh announcements after adding a new one
     } catch (error) {
@@ -55,7 +56,8 @@ const Announcements = () => {
               <div key={index} className="bg-white shadow-sm rounded-md overflow-hidden">
                 <div className="p-4">
                   <h3 className="text-xl font-semibold text-gray-900">{announcement.title}</h3>
-                  <p className="text-gray-600">{announcement.data}</p>
+                  <p className="text-gray-600">{announcement.body}</p>
+                  <p className="text-gray-500">Date: {new Date(announcement.date).toLocaleDateString()}</p>
                 </div>
               </div>
             ))}
@@ -86,15 +88,27 @@ const Announcements = () => {
                 />
               </div>
               <div>
-                <label htmlFor="data" className="block text-sm font-medium text-gray-700">Data</label>
+                <label htmlFor="body" className="block text-sm font-medium text-gray-700">Body</label>
                 <textarea
-                  id="data"
-                  name="data"
-                  value={newAnnouncement.data}
+                  id="body"
+                  name="body"
+                  value={newAnnouncement.body}
                   onChange={handleInputChange}
                   className="daisy-textarea w-full"
                   required
                 ></textarea>
+              </div>
+              <div>
+                <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  value={newAnnouncement.date}
+                  onChange={handleInputChange}
+                  className="daisy-input w-full"
+                  required
+                />
               </div>
               <div className="flex justify-end">
                 <button type="submit" className="daisy-btn daisy-btn-primary">Submit</button>
