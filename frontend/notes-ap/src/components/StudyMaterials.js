@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import './StudyMaterials.css';
 
-const CoursePage = () => {
-  const { courseId } = useParams();
+const StudyMaterials = () => {
+  const { course_name } = useParams();
+  const courseId = course_name;
   const [courseName, setCourseName] = useState('');
   const [studyMaterials, setStudyMaterials] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadedFileName, setUploadedFileName] = useState('');
+  const [userType, setUserType] = useState('');
 
   const fetchCourseDetails = async () => {
     try {
@@ -22,7 +25,17 @@ const CoursePage = () => {
 
   useEffect(() => {
     fetchCourseDetails();
+    fetchUserType();
   }, [courseId]);
+
+  const fetchUserType = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/get_info');
+      setUserType(response.data.type);
+    } catch (error) {
+      console.error('Error fetching user type:', error);
+    }
+  };
 
   const handleDownload = (fileName) => {
     console.log(`Downloading file: ${fileName}`);
@@ -68,32 +81,34 @@ const CoursePage = () => {
 
   return (
     <div className="container mx-auto mt-8">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 p-6">
         <h1 className="text-3xl font-bold">{courseName}</h1>
-        <div className="flex items-center space-x-4">
-          <input type="file" onChange={handleFileChange} className="hidden" id="fileInput" />
-          <label htmlFor="fileInput" className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105 cursor-pointer`}>Choose File</label>
-          <div>{uploadedFileName && <span className="text-sm">{uploadedFileName}</span>}</div>
-          <button className={`bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105`} onClick={handleUpload}>Upload PDF</button>
-        </div>
+        {(userType === 'admin' || userType === 'teacher') && (
+          <div className="flex items-center space-x-4">
+            <input type="file" onChange={handleFileChange} className="hidden" id="fileInput" />
+            <label htmlFor="fileInput" className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105 cursor-pointer`}>Choose File</label>
+            <div>{uploadedFileName && <span className="text-sm">{uploadedFileName}</span>}</div>
+            <button className={`bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 transform hover:scale-105`} onClick={handleUpload}>Upload PDF</button>
+          </div>
+        )}
       </div>
       <div className="grid grid-cols-1 gap-6">
         <div>
           <h2 className="text-2xl font-bold mb-4">Study Materials</h2>
           <div>
-            <ul className="p-4 bg-base-200 rounded-box w-full">
-              {studyMaterials.map((material, index) => (
-                <li key={index} className="border-b border-gray-300 py-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xl">{material}</span>
-                    <div>
-                      <button className="btn btn-download btn-sm bg-green-500 hover:bg-green-600 text-white font-bold mr-2 rounded-lg py-3 px-4" onClick={() => handleDownload(material)}>Download</button>
+            {studyMaterials.map((material, index) => (
+              <div key={index} className="study-card">
+                <div className="flex justify-between items-center">
+                  <span className="study-name ">{material}</span>
+                  <div>
+                    <button className="btn btn-download btn-sm bg-green-600 hover:bg-green-600 text-white font-bold mr-2 rounded-lg py-3 px-4" onClick={() => handleDownload(material)}>View</button>
+                    {(userType === 'admin' || userType === 'teacher') && (
                       <button className="btn btn-delete btn-sm bg-red-400 hover:bg-red-600 text-white font-bold rounded-lg py-3 px-4" onClick={() => handleDelete(material)}>Delete</button>
-                    </div>
+                    )}
                   </div>
-                </li>
-              ))}
-            </ul>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -101,4 +116,4 @@ const CoursePage = () => {
   );
 };
 
-export default CoursePage;
+export default StudyMaterials;

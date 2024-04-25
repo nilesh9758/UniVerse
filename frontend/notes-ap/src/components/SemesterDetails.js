@@ -17,26 +17,35 @@ const SemesterDetails = () => {
     }
   });
 
+  const [userType, setUserType] = useState('');
+
   useEffect(() => {
     fetchSemesterDetails();
+    fetchUserType();
   }, [semesterId]);
 
   const fetchSemesterDetails = async () => {
     try {
-      console.log(semesterId);
-      const responseIT = await axios.get(`http://localhost:5000/semester?semid=${semesterId}`);
-
-      console.log(responseIT.data);
+      const responseIT = await axios.get(`http://localhost:5000/semester?semester=${semesterId}`);
       setSemesterDetails({
         id: `semester${semesterId}`,
         name: `Semester ${semesterId}`,
         courses: {
           [departmentIT]: responseIT.data,
-       
+          // Include logic to fetch courses for other departments if needed
         }
       });
     } catch (error) {
       console.error(`Error fetching details for semester ${semesterId}:`, error);
+    }
+  };
+
+  const fetchUserType = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/get_info');
+      setUserType(response.data.type);
+    } catch (error) {
+      console.error('Error fetching user type:', error);
     }
   };
 
@@ -69,30 +78,34 @@ const SemesterDetails = () => {
     fetchSemesterDetails();
   };
 
-  const handleAddCourse = () => {
-    setShowAddCourseDialog(true);
-  };
-
   const handleCloseDialog = () => {
     setShowAddCourseDialog(false);
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 relative">
-      <button className="absolute top-0 right-0 mt-4 mr-4 bg-blue-500 text-white px-4 py-2 rounded-md" onClick={handleAddCourse}>
-        Add Course
-      </button>
+    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 relative"> {/* Add relative positioning */}
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-900 mb-8">{semesterDetails.name} Details</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {semesterDetails.courses[departmentIT].map(course => (
-            <Link key={course._id} to={`/courses/${course.title}`} className="bg-white border border-gray-200 p-6 rounded-lg hover:bg-gray-50 transition duration-300">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">{course.title}</h3>
-              <p className="text-gray-600">Department: {course.department}</p>
-            </Link>
+            <div key={course._id} className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-md">
+              <Link to={`/courses/${course.title}`} className="block cursor-pointer">
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{course.title}</h3>
+                  <p className="text-gray-600 mb-2">Description: {course.description}</p>
+                  <p className="text-gray-600">Department: {course.department}</p>
+                </div>
+              </Link>
+            </div>
           ))}
         </div>
       </div>
+
+      {(userType === 'admin' || userType === 'teacher') && (
+        <button className="absolute top-0 right-0 mt-4 mr-4 bg-blue-500 text-white px-4 py-2 rounded-md" onClick={() => setShowAddCourseDialog(true)}>
+          Add Course
+        </button>
+      )}
 
       {showAddCourseDialog && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">

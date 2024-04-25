@@ -11,6 +11,11 @@ const Results = () => {
   const [uploadType, setUploadType] = useState('');
   const [studentRoll, setStudentRoll] = useState('');
   const [studentSGPA, setStudentSGPA] = useState('');
+  const [userType, setUserType] = useState('');
+
+  useEffect(() => {
+    fetchUserType();
+  }, []);
 
   useEffect(() => {
     if (semester) {
@@ -18,9 +23,18 @@ const Results = () => {
     }
   }, [semester]);
 
+  const fetchUserType = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/get_info');
+      setUserType(response.data.type);
+    } catch (error) {
+      console.error('Error fetching user type:', error);
+    }
+  };
+
   const fetchCourses = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/semester?semid=${semester}`);
+      const response = await axios.get(`http://localhost:5000/semester?semester=${semester}`);
       setCourses(response.data);
     } catch (error) {
       console.error('Error fetching courses:', error);
@@ -31,7 +45,7 @@ const Results = () => {
     try {
       const response = await axios.get(`http://localhost:5000/result?semester=${semester}`);
       const gp = response.data.sgpa;
-      setSemesterResult(gp);
+      setSemesterResult("GPA  For the Given Semester : "+gp);
     } catch (error) {
       setSemesterResult("Yet To Be Uploaded");
       console.error('Error fetching semester result:', error);
@@ -41,8 +55,7 @@ const Results = () => {
   const handleCourseResultSubmit = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/result/course?course=${course}`);
-      console.log(response.data);
-      setCourseResult(response.data.gpa);
+      setCourseResult("CGPA For The Given Course : " + response.data.sgpa);
     } catch (error) {
       setCourseResult("Yet To Be Uploaded");
       console.error('Error fetching course result:', error);
@@ -70,7 +83,6 @@ const Results = () => {
           sgpa: studentSGPA
         });
         console.log('Semester result uploaded successfully:', response.data);
-        // Refresh the page or update the UI accordingly
       } catch (error) {
         console.error('Error uploading semester result:', error);
       }
@@ -83,7 +95,6 @@ const Results = () => {
           gpa: studentSGPA
         });
         console.log('Course result uploaded successfully:', response.data);
-        // Refresh the page or update the UI accordingly
       } catch (error) {
         console.error('Error uploading course result:', error);
       }
@@ -91,25 +102,21 @@ const Results = () => {
   };
 
   return (
-    <div className="container mx-auto mt-8">
+    <div className="container mx-auto mt-8 text-center">
+    <div className="bg-gray-100 rounded-md p-6 mb-8 border-2 border-gray-300">
       <h1 className="text-3xl font-bold mb-8">View Your Result</h1>
 
       {/* Semester-wise Results */}
-      <div className="flex space-x-4 mb-8">
+      <div className="mb-8">
         <select
           value={semester}
           onChange={(e) => setSemester(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-1"
+          className="border border-gray-300 rounded-md px-3 py-2 mr-2"
         >
           <option value="">Select Semester</option>
-          <option value="1">Semester 1</option>
-          <option value="2">Semester 2</option>
-          <option value="3">Semester 3</option>
-          <option value="4">Semester 4</option>
-          <option value="5">Semester 5</option>
-          <option value="6">Semester 6</option>
-          <option value="7">Semester 7</option>
-          <option value="8">Semester 8</option>
+          {[...Array(8)].map((_, index) => (
+            <option key={index + 1} value={index + 1}>Semester {index + 1}</option>
+          ))}
         </select>
         <button
           onClick={handleSemesterSubmit}
@@ -117,17 +124,15 @@ const Results = () => {
         >
           Submit
         </button>
-      </div>
-      <div>
-        {semesterResult && <p>{semesterResult}</p>}
+        {semesterResult && <p className="text-2xl mt-4">{semesterResult}</p>}
       </div>
 
       {/* Course-wise Results */}
-      <div className="flex space-x-4 mb-8">
+      <div className="mb-8">
         <select
           value={course}
           onChange={(e) => setCourse(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-1"
+          className="border border-gray-300 rounded-md px-3 py-2 mr-2"
         >
           <option value="">Select Course</option>
           {courses.map((course) => (
@@ -140,20 +145,21 @@ const Results = () => {
         >
           Submit
         </button>
-      </div>
-      <div>
-        {courseResult && <p>{courseResult}</p>}
+        {courseResult && <p className="text-2xl mt-4">{courseResult}</p>}
       </div>
 
       {/* Upload Results */}
-      <div className="flex justify-end">
-        <button
-          onClick={handleUploadDialogOpen}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md"
-        >
-          Upload Results
-        </button>
-      </div>
+      {(userType === 'admin' || userType === 'teacher') && (
+        <div className="mb-8">
+          <button
+            onClick={handleUploadDialogOpen}
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md"
+          >
+            Upload Results
+          </button>
+        </div>
+      )}
+    </div>
 
       {/* Upload Dialog */}
       {showUploadDialog && (
@@ -170,29 +176,24 @@ const Results = () => {
                     placeholder="Enter Roll Number"
                     value={studentRoll}
                     onChange={(e) => setStudentRoll(e.target.value)}
-                    className="border border-gray-300 rounded-md px-3 py-1 mb-4"
+                    className="border border-gray-300 rounded-md px-3 py-2 mb-4"
                   />
                   <select
                     value={semester}
                     onChange={(e) => setSemester(e.target.value)}
-                    className="border border-gray-300 rounded-md px-3 py-1 mb-4"
+                    className="border border-gray-300 rounded-md px-3 py-2 mb-4"
                   >
                     <option value="">Select Semester</option>
-                    <option value="1">Semester 1</option>
-                    <option value="2">Semester 2</option>
-                    <option value="3">Semester 3</option>
-                    <option value="4">Semester 4</option>
-                    <option value="5">Semester 5</option>
-                    <option value="6">Semester 6</option>
-                    <option value="7">Semester 7</option>
-                    <option value="8">Semester 8</option>
+                    {[...Array(8)].map((_, index) => (
+                      <option key={index + 1} value={index + 1}>Semester {index + 1}</option>
+                    ))}
                   </select>
 
                   {uploadType === 'course' && (
                     <select
                       value={course}
                       onChange={(e) => setCourse(e.target.value)}
-                      className="border border-gray-300 rounded-md px-3 py-1 mb-4"
+                      className="border border-gray-300 rounded-md px-3 py-2 mb-4"
                     >
                       <option value="">Select Course</option>
                       {courses.map((course) => (
@@ -206,7 +207,7 @@ const Results = () => {
                     placeholder="Enter SGPA"
                     value={studentSGPA}
                     onChange={(e) => setStudentSGPA(e.target.value)}
-                    className="border border-gray-300 rounded-md px-3 py-1 mb-4"
+                    className="border border-gray-300 rounded-md px-3 py-2 mb-4"
                   />
                   <button onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md mr-4">Submit</button>
                   <button onClick={handleUploadDialogClose} className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md">Cancel</button>

@@ -1,9 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserEdit, faBook, faChartBar } from '@fortawesome/free-solid-svg-icons'; // Import icons from @fortawesome/free-solid-svg-icons
+import { faUserEdit, faBook, faChartBar, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'; // Import icons from @fortawesome/free-solid-svg-icons
 
 const Layout = ({ children }) => {
+
+  const handleSignOut = async () => {
+    try {
+      // Perform sign-out logic here, such as sending a POST request to the sign-out endpoint
+      await fetch('http://localhost:5000/signout', {
+        method: 'POST',
+        credentials: 'include', // Include credentials for CORS
+      });
+      // Redirect to the login page after sign-out
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="bg-blue-500 text-white py-4 flex justify-between items-center px-4">
@@ -21,6 +36,9 @@ const Layout = ({ children }) => {
           <Link to="/results" className="px-4">
             Results
           </Link>
+          <button className="px-4" onClick={handleSignOut}>
+            <FontAwesomeIcon icon={faSignOutAlt} />
+          </button>
         </nav>
       </header>
       <main className="flex-grow">{children}</main>

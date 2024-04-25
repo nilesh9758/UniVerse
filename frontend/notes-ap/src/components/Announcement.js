@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-axios.defaults.withCredentials = true
+
 const Announcements = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -9,10 +9,12 @@ const Announcements = () => {
     body: '',
     date: new Date().toISOString().split('T')[0] // Initialize date with today's date
   });
+  const [userType, setUserType] = useState('');
 
   useEffect(() => {
     fetchAnnouncements();
-  }, []); // Fetch announcements on component mount
+    fetchUserInfo();
+  }, []); // Fetch announcements and user info on component mount
 
   const fetchAnnouncements = async () => {
     try {
@@ -20,6 +22,15 @@ const Announcements = () => {
       setAnnouncements(response.data);
     } catch (error) {
       console.error('Error fetching announcements:', error);
+    }
+  };
+
+  const fetchUserInfo = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/get_info');
+      setUserType(response.data.type);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
     }
   };
 
@@ -45,15 +56,15 @@ const Announcements = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-blue-100">
       <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="space-y-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">Announcements</h2>
+            <h2 className="text-3xl font-bold text-blue-800">Announcements</h2>
           </div>
           <div className="space-y-4">
             {announcements.map((announcement, index) => (
-              <div key={index} className="bg-white shadow-sm rounded-md overflow-hidden">
+              <div key={index} className="bg-white shadow-md rounded-md overflow-hidden">
                 <div className="p-4">
                   <h3 className="text-xl font-semibold text-gray-900">{announcement.title}</h3>
                   <p className="text-gray-600">{announcement.body}</p>
@@ -62,19 +73,21 @@ const Announcements = () => {
               </div>
             ))}
           </div>
-          <button
-            onClick={() => setShowAddDialog(true)}
-            className="daisy-btn daisy-btn-primary w-full py-3 px-6 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold"
-          >
-            Add Announcement
-          </button>
+          {(userType === 'admin' || userType === 'teacher') && (
+            <button
+              onClick={() => setShowAddDialog(true)}
+              className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold"
+            >
+              Add Announcement
+            </button>
+          )}
         </div>
       </div>
       {showAddDialog && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-8 max-w-md w-full">
-            <h3 className="text-xl font-semibold mb-4">Add Announcement</h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <h3 className="text-2xl font-semibold mb-4 text-gray-800">Add Announcement</h3>
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
                 <input
@@ -83,7 +96,7 @@ const Announcements = () => {
                   name="title"
                   value={newAnnouncement.title}
                   onChange={handleInputChange}
-                  className="daisy-input w-full"
+                  className="input-field border-4 border-solid rounded-md border-blue-300"
                   required
                 />
               </div>
@@ -94,7 +107,7 @@ const Announcements = () => {
                   name="body"
                   value={newAnnouncement.body}
                   onChange={handleInputChange}
-                  className="daisy-textarea w-full"
+                  className="input-field h-32 border-4 border-solid rounded-md border-blue-300"
                   required
                 ></textarea>
               </div>
@@ -106,13 +119,13 @@ const Announcements = () => {
                   name="date"
                   value={newAnnouncement.date}
                   onChange={handleInputChange}
-                  className="daisy-input w-full"
+                  className="input-field"
                   required
                 />
               </div>
               <div className="flex justify-end">
-                <button type="submit" className="daisy-btn daisy-btn-primary">Submit</button>
-                <button onClick={() => setShowAddDialog(false)} className="ml-2 daisy-btn">Cancel</button>
+                <button type="submit" className="btn btn-primary">Submit</button>
+                <button onClick={() => setShowAddDialog(false)} className="ml-2 btn btn-secondary">Cancel</button>
               </div>
             </form>
           </div>
