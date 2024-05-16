@@ -7,7 +7,6 @@ const { setUser } = require("../service/auth")
 async function UserSignup(req, res) {
     try {
         const { name, rollNo, email, age, gender, password } = req.body;
-        console.log("sdds");
         await personal_user.create({
             name,
             rollNo,
@@ -21,14 +20,18 @@ async function UserSignup(req, res) {
         return res.json({ message: "User Signup Successful." });
     }
     catch (error) {
+        console.log(error);
         console.log("User Signup Failed.");
         //redirect to Login Page
-        return res.json({ message: "User Signup Failed." });
+        return res.json({ message: "User Signup Failed. entry of same roll number and email is present" });
     }
 }
 
 async function UserLogin(req, res) {
+    console.log(req.body);
+    
     const user = await personal_user.findOne({ rollNo : req.body.rollNo, password:req.body.password });
+    
     if (!user) {
         console.log("Incorrect rollNo or password.");
         return res.json({ message: "Incorrect rollNo or password." })
@@ -40,6 +43,7 @@ async function UserLogin(req, res) {
     setUser(sessionId, user);
     res.cookie("uid", sessionId);
     return res.json({ message: "User Login Successful." })
+
 }
 
 module.exports = {

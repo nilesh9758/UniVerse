@@ -73,6 +73,7 @@ const Announcements = () => {
               </div>
             ))}
           </div>
+          <button type="button" onClick={() => window.history.back()} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 mr-3 px-4 rounded-md">Go Back</button>
           {(userType === 'admin' || userType === 'teacher') && (
             <button
               onClick={() => setShowAddDialog(true)}
@@ -86,6 +87,7 @@ const Announcements = () => {
       {showAddDialog && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-8 max-w-md w-full">
+            
             <h3 className="text-2xl font-semibold mb-4 text-gray-800">Add Announcement</h3>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>

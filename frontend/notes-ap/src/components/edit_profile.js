@@ -89,7 +89,7 @@ const EditProfile = () => {
 
   return (
     <div className="container mx-auto mt-8">
-      <div className="bg-gray-100 p-8 rounded-lg shadow-md">
+      <div className="bg-gray-100 p-8 mt-10 rounded-lg shadow-md">
         <h1 className="text-3xl font-bold mb-8">Edit Profile</h1>
         {successMessage && <p className="text-green-600 mb-4">{successMessage}</p>}
         {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}

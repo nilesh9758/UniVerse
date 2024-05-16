@@ -103,7 +103,7 @@ const Results = () => {
 
   return (
     <div className="container mx-auto mt-8 text-center">
-    <div className="bg-gray-100 rounded-md p-6 mb-8 border-2 border-gray-300">
+    <div className="bg-gray-100 rounded-md p-8 mt-10 mb-8 border-2 border-gray-300">
       <h1 className="text-3xl font-bold mb-8">View Your Result</h1>
 
       {/* Semester-wise Results */}
