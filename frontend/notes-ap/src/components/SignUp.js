@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
 
+//functions
 const SignUp = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -16,7 +17,8 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, 
+      [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -29,6 +31,7 @@ const SignUp = () => {
       // Assuming the response includes a success message
       // Reset the form after successful registration
       setFormData({
+        //form data reset 
         name: '',
         rollNo: '',
         email: '',
@@ -37,32 +40,43 @@ const SignUp = () => {
         password: '',
       });
        navigate('/login');
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error registering student:', error);
     }
   };
 
+
+  //return 
   return (
     <div className="flex justify-center items-center h-[90%] bg-gray-100">
       <div className="max-w-md w-full mt-8 p-8 bg-white rounded shadow-lg">
         <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-8">Sign up</h2>
+        {/* form start */}
         <form className="space-y-4" onSubmit={handleSubmit}>
+
+          {/* name */}
+
           <div>
-            <label htmlFor="name" className="block text-gray-700 font-semibold ">Name</label>
+            <label htmlFor="name" className="block text-gray-700 font-semibold mb-2">Name</label>
             <input
               id="name"
               name="name"
               type="text"
               autoComplete="name"
               required
-              className="daisy-input w-full bg-gray-200 border-gray-300 rounded-sm p-2"
+              className="daisy-input w-full bg-gray-200 border-gray-900 rounded-sm p-2"
+              
               placeholder="Enter your name"
               value={formData.name}
               onChange={handleChange}
             />
           </div>
+
+          {/* roll no */}
+
           <div>
-            <label htmlFor="rollNo" className="block text-gray-700 font-semibold">Roll Number</label>
+            <label htmlFor="rollNo" className="block text-gray-700 font-semibold mb-2">Roll Number</label>
             <input
               id="rollNo"
               name="rollNo"
@@ -75,6 +89,9 @@ const SignUp = () => {
               onChange={handleChange}
             />
           </div>
+
+          {/* e mail */}
+
           <div>
             <label htmlFor="email" className="block text-gray-700 font-semibold">Email address</label>
             <input
@@ -89,6 +106,9 @@ const SignUp = () => {
               onChange={handleChange}
             />
           </div>
+
+          {/* age */}
+
           <div>
             <label htmlFor="age" className="block text-gray-700 font-semibold">Age</label>
             <input
@@ -103,6 +123,9 @@ const SignUp = () => {
               onChange={handleChange}
             />
           </div>
+
+          {/* gender */}
+
           <div>
             <label htmlFor="gender" className="block text-gray-700 font-semibold">Gender</label>
             <select
@@ -119,6 +142,9 @@ const SignUp = () => {
               <option value="other">Other</option>
             </select>
           </div>
+
+          {/* password */} 
+
           <div>
             <label htmlFor="password" className="block text-gray-700 font-semibold">Password</label>
             <input
@@ -133,15 +159,20 @@ const SignUp = () => {
               onChange={handleChange}
             />
           </div>
+
+          {/* signUp button */}
+
           <button
             type="submit"
-            className=" text-white font-bold daisy-btn daisy-btn-primary bg-blue-700 border rounded-lg w-full pt-2 pb-2"
+            className=" text-white font-bold daisy-btn daisy-btn-primary bg-blue-700 border rounded-lg w-full pt-2 pb-2 transform hover:scale-125"
           >
             Sign up
           </button>
-          <Link to="/login" className="daisy-btn w-full pt-4 mt-4 text-gray-800 justify-center items-center align-center ">
+          <Link to="/login" className="daisy-btn w-3 pt-4 mt-4 text-gray-800 justify-center items-center align-center ">
             Already have an account? Login
           </Link>
+
+          {/* form end */}
         </form>
       </div>
     </div>

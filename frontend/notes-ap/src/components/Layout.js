@@ -41,7 +41,9 @@ const Layout = ({ children }) => {
           </button>
         </nav>
       </header>
+
       <main className="flex-grow">{children}</main>
+      
       <footer className="text-white">
         <div className="w-full h-16 bg-blue-700">
           {/* Wavy border SVG */}

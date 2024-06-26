@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import SignUp from '../components/SignUp';
-import Login from '../components/Login';
-import Dashboard from '../components/DashBoard';
-import Results from '../components/Results';
-import Announcements from '../components/Announcement';
+import React, { useEffect, useState } from 'react';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
-import Notes from '../components/Notes';
-import SemesterDetails from '../components/SemesterDetails';
-import Layout from '../components/Layout';
-import StudyMaterials from '../components/StudyMaterials';
+import Announcements from '../components/Announcement';
 import CourseContentPage from '../components/CourseContentPage';
-import PYQS from '../components/Pyqs';
+import Dashboard from '../components/DashBoard';
+import Layout from '../components/Layout';
 import LinksPage from '../components/LinksPage';
-import Loading from '../components/Loading';
+import Login from '../components/Login';
+import Notes from '../components/Notes';
+import PYQS from '../components/Pyqs';
+import Results from '../components/Results';
+import SemesterDetails from '../components/SemesterDetails';
+import SignUp from '../components/SignUp';
+import StudyMaterials from '../components/StudyMaterials';
 import EditProfile from '../components/edit_profile';
 
+//app function starts
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -32,7 +32,7 @@ const App = () => {
     <Router>
         <Layout>
           <Routes>
-            <Route path="/" element={<Navigate to="/signup" />} />
+            <Route exact path="/" element={<Navigate to="/signup" />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<Dashboard />} />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 axios.defaults.withCredentials = true
+
 const SemesterDetails = () => {
   const navigate = useNavigate();
   const { semesterId } = useParams();
