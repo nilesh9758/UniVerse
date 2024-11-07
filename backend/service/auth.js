@@ -1,3 +1,5 @@
+//only needed for sessions
+
 const sessionIdToUserMap = new Map();
 
 function setUser(id, user) {
@@ -21,7 +23,9 @@ function checking_login(req,res,uid){
 }
 
 function remove_uuid(uid){
-    if(sessionIdToUserMap.has(uid)) sessionIdToUserMap.delete(uid)
+    if(sessionIdToUserMap.has(uid))
+        {sessionIdToUserMap.delete(uid)}
+    
     console.log(sessionIdToUserMap)
     return;
 }

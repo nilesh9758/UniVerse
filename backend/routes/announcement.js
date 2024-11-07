@@ -1,46 +1,49 @@
 const express = require("express");
 
-// model importing 
+// Model importing 
 const Announ = require("../models/Announcement");
-
 const router = express.Router();
 
-function check_if_teacher_or_admin(req){
-  return req.user.type==="admin" || req.user.type==="teacher";
+// Check if user is a teacher or admin
+function check_if_teacher_or_admin(req) {
+  return req.body.userType === "admin" || req.body.userType === "teacher";
 }
 
+// Only for admin or teacher
 router.post("/", async (req, res) => {
-  if(check_if_teacher_or_admin(req)){
-    try {
-      // const { title, body } = req.body;
-      console.log(req.body)
-      const newAnnounce = new Announ({
-        title : req.body.title,
-        body : req.body.body,
-        date: Date.now(),
-      });
-      await newAnnounce.save();
-      res.status(201).json({ message: "Announcement created successfully;" });
-    } 
-    catch (error) {
-      console.log("Error creating Announcement:", error);
-      res.status(500).json({ error: "Error encountered" });
-    }
+  if (!check_if_teacher_or_admin(req)) {
+    return res.status(401).json({ error: "You are not authorized. Must be admin or teacher." });
   }
-  else{
-    return res.status(401).send("you are not admin or teacher");
+
+  // Ensure required fields are present
+  const { title, body } = req.body.newAnnouncement;
+  if (!title || !body) {
+    return res.status(400).json({ error: "Title and body are required." });
+  }
+
+  try {
+    const newAnnounce = new Announ({
+      title: title,
+      body: body,
+      date: Date.now(),
+    });
+
+    await newAnnounce.save();
+    res.status(201).json({ message: "Announcement created successfully." });
+  } catch (error) {
+    console.error("Error creating Announcement:", error);
+    res.status(500).json({ error: "Internal server error. Could not create the announcement." });
   }
 });
 
 router.get("/", async (req, res) => {
   try {
-    const announcements = await Announ.find().sort({ date: -1 }).limit(5);
+    const announcements = await Announ.find().sort({ date: -1 });
     res.json(announcements);
   } catch (error) {
-    console.log("Error fetching announcements:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Error fetching announcements:", error);
+    res.status(500).json({ error: "Internal server error. Could not fetch announcements." });
   }
 });
 
-
-module.exports = router 
+module.exports = router;

@@ -4,10 +4,10 @@ const result_according_to_sem = new mongoose.Schema({
     rollNo: {
         type: String,
         required: true,
-        unique: true,
+        //unique: true,
     },
     semester:{
-        type:String,
+        type:Number,
         required:true,
     },
     sgpa:{
